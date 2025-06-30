@@ -1,45 +1,65 @@
-# Tutorial de FastMCP
+# FastMCP Tutorial y Ejemplos Avanzados
 
-Este proyecto te ayudará a aprender los conceptos básicos de MCP (Model Context Protocol) usando FastMCP en Python.
+¡Bienvenido! Este proyecto te guía desde los conceptos básicos hasta casos de uso avanzados de MCP (Model Context Protocol) usando FastMCP en Python.
 
 ## ¿Qué es MCP?
-
-MCP (Model Context Protocol) es un protocolo estándar que permite a los modelos de IA interactuar con herramientas, recursos y servicios externos de manera consistente.
+MCP (Model Context Protocol) es un estándar para que modelos de IA interactúen con herramientas, recursos y servicios externos de forma consistente y segura.
 
 ## ¿Qué es FastMCP?
+FastMCP es una biblioteca Python que simplifica la creación de servidores MCP, similar a FastAPI para APIs web, permitiendo exponer funciones, recursos y prompts de manera modular y escalable.
 
-FastMCP es una biblioteca de Python que simplifica la creación de servidores MCP, similar a como FastAPI simplifica la creación de APIs web.
-
-## Conceptos Clave
-
-### 1. **Herramientas (Tools)**
-Son funciones que el modelo de IA puede llamar para realizar tareas específicas.
-
-### 2. **Recursos (Resources)**
-Proporcionan acceso a datos o información que el modelo puede consultar.
-
-### 3. **Prompts**
-Son plantillas predefinidas que ayudan a guiar las interacciones con el modelo.
+---
 
 ## Estructura del Proyecto
 
 ```
 fastmcp-tutorial/
-├── my_first_server.py  # Servidor MCP de ejemplo
-├── README.md          # Este archivo
-└── pyproject.toml     # Configuración del proyecto
+├── my_first_server.py        # Ejemplo básico de servidor MCP
+├── ejemplo_avanzado.py      # Servidor avanzado: gestión de archivos, notas, búsquedas
+├── obsidian_mcp_server.py   # Integración avanzada con Obsidian Vault
+├── README.md                # Esta guía
+├── pyproject.toml           # Configuración del proyecto
+└── ...
 ```
 
-## Cómo Ejecutar el Servidor
+---
 
-1. **Ejecutar el servidor**:
+## Ejecución Rápida
+
+1. **Instala dependencias:**
+   ```bash
+   pip install -r requirements.txt  # o usa pyproject.toml con tu gestor preferido
+   ```
+2. **Ejecuta un servidor MCP:**
    ```bash
    uv run my_first_server.py
+   # o para el avanzado:
+   uv run ejemplo_avanzado.py
    ```
+   El servidor se ejecuta en modo stdio (entrada/salida estándar), compatible con clientes MCP.
 
-2. **El servidor se ejecutará en modo stdio** (entrada/salida estándar), que es el protocolo estándar para MCP.
+---
 
-## Ejemplos en el Código
+## Tabla de Herramientas y Recursos
+
+| Tipo        | Nombre                | Descripción breve                                      |
+|-------------|-----------------------|--------------------------------------------------------|
+| Herramienta | `saludo`              | Saluda a una persona por su nombre                     |
+| Herramienta | `calcular`            | Operaciones matemáticas básicas                        |
+| Herramienta | `listar_archivos`     | Lista archivos y carpetas en una ruta                  |
+| Herramienta | `leer_archivo`        | Lee el contenido de un archivo de texto                |
+| Herramienta | `crear_nota`          | Crea una nota en JSON o Markdown                       |
+| Herramienta | `buscar_texto`        | Busca texto en archivos de un directorio               |
+| Herramienta | `listar_notas`        | Lista notas Markdown en un vault Obsidian              |
+| Herramienta | `leer_nota`           | Lee el contenido de una nota específica                |
+| Herramienta | `buscar_en_notas`     | Busca texto o títulos en notas de Obsidian             |
+| Recurso     | `configuracion`       | Configuración básica del servidor                      |
+| Recurso     | `info_directorio_trabajo` | Info sobre el directorio de trabajo actual         |
+| Recurso     | `configuracion_avanzada`  | Configuración avanzada y capacidades declaradas    |
+
+---
+
+## Ejemplos de Uso
 
 ### Herramienta Simple
 ```python
@@ -49,44 +69,69 @@ def saludo(nombre: str) -> str:
     return f"¡Hola {nombre}! Bienvenido al mundo de MCP"
 ```
 
-### Herramienta con Múltiples Parámetros
+### Herramienta Avanzada
 ```python
 @mcp.tool()
-def calcular(operacion: str, a: float, b: float) -> str:
-    # Realiza operaciones matemáticas básicas
+def listar_archivos(directorio: str = ".") -> str:
+    # Lista archivos y carpetas en la ruta dada
 ```
 
-### Recurso
+### Recurso Asíncrono
 ```python
-@mcp.resource("configuracion")
-async def obtener_configuracion() -> str:
-    # Proporciona información de configuración
+@mcp.resource("file://directorio_trabajo")
+async def info_directorio_trabajo() -> str:
+    # Devuelve información estructurada sobre el directorio actual
 ```
 
-### Prompt
+### Prompt Educativo
 ```python
 @mcp.prompt()
-def prompt_ayuda() -> str:
-    # Plantilla de ayuda
+def prompt_tutorial_mcp() -> str:
+    # Explica objetivos y ejercicios sugeridos para aprender MCP
 ```
+
+---
+
+## Integración con Obsidian
+
+El archivo `obsidian_mcp_server.py` permite interactuar con tu vault de Obsidian:
+- Listar notas por carpeta o globalmente
+- Leer el contenido completo de una nota
+- Buscar texto en títulos o contenido de notas
+- Crear y modificar notas con metadatos y etiquetas
+
+Configura la variable `OBSIDIAN_VAULT_PATH` para apuntar a tu vault local.
+
+---
+
+## Consejos y Buenas Prácticas
+
+- **Modulariza** tus herramientas y recursos para facilitar la extensión.
+- **Usa funciones asíncronas** (`async def`) para operaciones de I/O intensivo.
+- **Agrega docstrings claros** en español, explicando entradas, salidas y propósito.
+- **Evita valores hardcodeados**: usa parámetros y variables configurables.
+- **Maneja errores** de forma robusta y devuelve mensajes útiles.
+- **Aprovecha prompts** para guiar la interacción y educar a los usuarios.
+- **Integra logging** para depuración y trazabilidad.
+
+---
 
 ## Próximos Pasos
 
-1. **Experimenta** modificando las herramientas existentes
-2. **Agrega** nuevas herramientas y recursos
-3. **Integra** el servidor con un cliente MCP (como Claude Desktop)
-4. **Explora** casos de uso más avanzados
+1. **Experimenta** modificando y extendiendo las herramientas existentes.
+2. **Agrega** nuevas funciones útiles para tu flujo de trabajo.
+3. **Integra** el servidor con clientes MCP (ej: Claude Desktop, scripts propios).
+4. **Explora** casos de uso avanzados: automatización, integración con otros sistemas, etc.
 
-## Recursos Adicionales
+---
+
+## Recursos y Enlaces
 
 - [Documentación oficial de MCP](https://modelcontextprotocol.io/)
 - [FastMCP en GitHub](https://github.com/jlowin/fastmcp)
 - [Ejemplos de servidores MCP](https://github.com/modelcontextprotocol/servers)
+- [Obsidian](https://obsidian.md/)
 
-## Consejos para Aprender
+---
 
-1. Comienza con herramientas simples
-2. Agrega logging para entender el flujo de datos
-3. Prueba diferentes tipos de parámetros
-4. Experimenta con operaciones asíncronas
-5. Conecta tu servidor con aplicaciones reales
+¿Dudas o sugerencias? ¡Modifica este README y contribuye a la documentación!
